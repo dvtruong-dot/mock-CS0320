@@ -1,3 +1,3 @@
 export interface REPLFunction {
-  (args: string[]): string;
+  (args: string[]): string | string[][];
 }

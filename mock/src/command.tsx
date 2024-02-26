@@ -7,7 +7,7 @@ export class CommandProcessor {
     this.commands.set(name, func);
   }
 
-  processCommand(command: string): string {
+  processCommand(command: string): string | string[][] {
     const [commandName, ...args] = command.trim().split(" ");
     const commandFunc = this.commands.get(commandName);
 

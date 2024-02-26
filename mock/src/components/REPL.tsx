@@ -14,6 +14,12 @@ import { CommandProcessor } from "../command";
 */
 
 export default function REPL() {
+  const mockedData = new Map<string, string[][]>();
+  mockedData.set("file1", [
+    ["header1", "header2", "header3"],
+    ["1", "2", "3"],
+    ["4", "5", "6"],
+  ]);
   // TODO: Add some kind of shared state that holds all the commands submitted.
   //const [history, setHistory] = useState<string[]>([]);
 
@@ -21,6 +27,7 @@ export default function REPL() {
   const [commandHistory, setCommandHistory] = useState<
     { command: string; result: string }[]
   >([]);
+  const [loadedFile, setLoadedFile] = useState<string[][]>();
   const [useBrief, setUseBrief] = useState<boolean>(true);
   const commandProcessor = new CommandProcessor();
 
@@ -31,6 +38,23 @@ export default function REPL() {
       return "mode set to verbose";
     } else {
       return "mode set to brief";
+    }
+  });
+
+  commandProcessor.registerCommand("load_file", (args: string[]) => {
+    if (mockedData.get(args[0])) {
+      setLoadedFile(mockedData.get(args[0]));
+      return "file loaded successfully";
+    } else {
+      return "file could not be found";
+    }
+  });
+
+  commandProcessor.registerCommand("view_file", () => {
+    if (loadedFile) {
+      return loadedFile;
+    } else {
+      return "No file has been loaded!";
     }
   });
 
