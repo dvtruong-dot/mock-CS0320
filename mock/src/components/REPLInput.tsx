@@ -3,9 +3,15 @@ import { Dispatch, SetStateAction, useState} from 'react';
 import { ControlledInput } from './ControlledInput';
 
 interface REPLInputProps{
-  history : string[];
-  setHistory: Dispatch<SetStateAction<string[]>>
+  //history : string[];
+  //setHistory: Dispatch<SetStateAction<string[]>>
 
+  //new shit
+  commandHistory : {command : string, result : string, brief : boolean}[];
+  setCommandHistory : Dispatch<SetStateAction<{command : string, result : string, brief : boolean}[]>>;
+
+  useBrief : boolean;
+  setUseBrief : Dispatch<SetStateAction<boolean>>;
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
 }
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
@@ -14,7 +20,7 @@ export function REPLInput(props : REPLInputProps) {
     // Remember: let React manage state in your webapp. 
     // Manages the contents of the input box
     const [commandString, setCommandString] = useState<string>('');
-    const [count, setCount] = useState<number>(0);
+    //const [brief, setBrief] = useState<boolean>(true);
     // TODO WITH TA : add a count state
     
     // TODO WITH TA: build a handleSubmit function called in button onClick
@@ -25,9 +31,34 @@ export function REPLInput(props : REPLInputProps) {
      * of the REPL and how they connect to each other...
      */
     function handleSubmit(commandString : string) {
-      setCount(count + 1);
-      props.setHistory([...props.history, commandString]);
+      let tempMode = props.useBrief;
+
+      if (commandString === "mode") {
+        tempMode = !props.useBrief;
+      }
+      
+      const toAddCommand = {command : commandString, result : getOutput(commandString), brief : tempMode};
+
+      props.setCommandHistory([...props.commandHistory, toAddCommand]);
+
       setCommandString("");
+    }
+
+    function getOutput(command : string) : string {
+      //maybe a placeholder until user story 6 where we'll have a dictionary that takes a command and maps 
+      //it to a function (or class ???, idk im confused) that has the function it corresponds to. This 
+      //function should also return a string
+
+    if (command == "mode") {
+      props.setUseBrief(!props.useBrief);
+      if (props.useBrief) {
+        return "mode set to verbose";
+      } else {
+        return "mode set to brief"
+      }
+    }
+    return ""; //perhaps we can consider using the return of an enpty string as an error (not sure if we should 
+    //consider a developer wantinng their command to be an empty string "")
     }
 
     return (
@@ -42,7 +73,7 @@ export function REPLInput(props : REPLInputProps) {
             </fieldset>
             {/* TODO WITH TA: Build a handleSubmit function that increments count and displays the text in the button */}
             {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
-            <button onClick={() => handleSubmit(commandString)}>Submitted {count} times!</button>
+            <button onClick={() => handleSubmit(commandString)}>Submit</button>
         </div>
     );
   }
