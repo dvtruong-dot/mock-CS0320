@@ -5,17 +5,17 @@ interface REPLHistoryProps{
     // TODO: Fill with some shared state tracking all the pushed commands
     //history : string[];
 
-    commandHistory : {command : string, result : string, brief : boolean}[];
+    commandHistory : {command : string, result : string}[];
     useBrief : boolean;
 }
 export function REPLHistory(props : REPLHistoryProps) {
+
     function returnHistory() {
-        return props.commandHistory.map((command,index) => 
-        {if (command["brief"]) {
-            return <p>{command["result"]}</p>;
+        if (props.useBrief) {
+            return props.commandHistory.map((command, index) => <p> {command["result"]}</p>)
         } else {
-            return <p><pre>{"command: " + command["command"] + "\n" + "result: " + command["result"]}</pre></p>;
-        }});
+            return props.commandHistory.map((command, index) => <p><pre> {"command: " + command["command"] + "\n" + "result: " + command["result"]}</pre> </p>)
+        }
     }
     return (
         <div className="repl-history">

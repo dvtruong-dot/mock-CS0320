@@ -17,7 +17,7 @@ export default function REPL() {
   //const [history, setHistory] = useState<string[]>([]);
   
   //new schtuff
-  const [commandHistory, setCommandHistory] = useState<{command : string, result : string, brief : boolean}[]>([]);
+  const [commandHistory, setCommandHistory] = useState<{command : string, result : string}[]>([]);
   const [useBrief, setUseBrief] = useState<boolean>(true);
 
   return (

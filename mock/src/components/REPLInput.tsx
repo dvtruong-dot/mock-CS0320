@@ -7,8 +7,8 @@ interface REPLInputProps{
   //setHistory: Dispatch<SetStateAction<string[]>>
 
   //new shit
-  commandHistory : {command : string, result : string, brief : boolean}[];
-  setCommandHistory : Dispatch<SetStateAction<{command : string, result : string, brief : boolean}[]>>;
+  commandHistory : {command : string, result : string}[];
+  setCommandHistory : Dispatch<SetStateAction<{command : string, result : string}[]>>;
 
   useBrief : boolean;
   setUseBrief : Dispatch<SetStateAction<boolean>>;
@@ -31,13 +31,8 @@ export function REPLInput(props : REPLInputProps) {
      * of the REPL and how they connect to each other...
      */
     function handleSubmit(commandString : string) {
-      let tempMode = props.useBrief;
-
-      if (commandString === "mode") {
-        tempMode = !props.useBrief;
-      }
       
-      const toAddCommand = {command : commandString, result : getOutput(commandString), brief : tempMode};
+      const toAddCommand = {command : commandString, result : getOutput(commandString)};
 
       props.setCommandHistory([...props.commandHistory, toAddCommand]);
 
