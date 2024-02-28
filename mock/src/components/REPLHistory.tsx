@@ -52,9 +52,9 @@ export function REPLHistory(props: REPLHistoryProps) {
               {"command: " +
                 command["command"] +
                 "\n" +
-                "result: " +
-                constructTable(command["result"])}
+                "result: "}
             </pre>{" "}
+            {constructTable(command["result"])}
           </p>
         )
       );

@@ -15,17 +15,33 @@ import { CommandProcessor } from "../command";
 
 export default function REPL() {
   const mockedData = new Map<string, string[][]>();
-  mockedData.set("file1", [
+  mockedData.set("file1_headers", [
     ["header1", "header2", "header3"],
     ["1", "2", "3"],
     ["4", "5", "6"],
   ]);
+
+  mockedData.set("file1_noheaders", [
+    ["1", "2", "3"], 
+    ["4", "5,", "6"]
+  ])
+
+  //not sure if this should be part of our test cases considering that the error should be found in our
+  //backend with the CSV parser
+  mockedData.set("file_inconsistent_columns", [
+    ["header1", "header2", "header3"],
+    ["1", "2", "3"],
+    ["4", "5"]
+  ]
+  )
+
+  
   // TODO: Add some kind of shared state that holds all the commands submitted.
   //const [history, setHistory] = useState<string[]>([]);
 
   //new schtuff
   const [commandHistory, setCommandHistory] = useState<
-    { command: string; result: string }[]
+    { command: string; result: string | string[][]}[]
   >([]);
   const [loadedFile, setLoadedFile] = useState<string[][]>();
   const [useBrief, setUseBrief] = useState<boolean>(true);

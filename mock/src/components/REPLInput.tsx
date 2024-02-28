@@ -9,9 +9,9 @@ interface REPLInputProps {
   //setHistory: Dispatch<SetStateAction<string[]>>
 
   //new shit
-  commandHistory: { command: string; result: string }[];
+  commandHistory: { command: string; result: string | string[][]}[];
   setCommandHistory: Dispatch<
-    SetStateAction<{ command: string; result: string }[]>
+    SetStateAction<{ command: string; result: string | string[][] }[]>
   >;
 
   useBrief: boolean;
@@ -42,7 +42,7 @@ export function REPLInput(props: REPLInputProps) {
     setCommandString("");
   }
 
-  function getOutput(command: string): string {
+  function getOutput(command: string): string | string[][] {
     //maybe a placeholder until user story 6 where we'll have a dictionary that takes a command and maps
     //it to a function (or class ???, idk im confused) that has the function it corresponds to. This
     //function should also return a string

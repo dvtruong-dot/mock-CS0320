@@ -16,6 +16,5 @@ test('is 1 + 1 = 2?', () => {
 test('main.zero() should return 0', () => {
   expect(main.zero()).toBe(0)
 })
-
 // For more information on how to make unit tests, visit:
 // https://jestjs.io/docs/using-matchers
