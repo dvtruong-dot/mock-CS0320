@@ -18,6 +18,7 @@ export default function REPL() {
   const mockedData = new Map<string, MockedData>();
 
   //Create instances of MockedData
+  //
   const file1_headers = new MockedData([
     ["header1", "header2", "header3"],
     ["1", "2", "3"],
@@ -25,25 +26,33 @@ export default function REPL() {
   ]);
   file1_headers.registerQuery("header1 4", [["4", "5", "6"]]);
   file1_headers.registerQuery("1 2", [["1", "2", "3"]]);
+  file1_headers.registerQuery("header3 3", [["1", "2", "3"]]);
 
-  // mockedData.set("file1_noheaders", [
-  //   ["1", "2", "3"],
-  //   ["4", "5,", "6"],
-  // ]);
+  //
+  const file1_noheaders = new MockedData([
+    ["1", "2", "3"],
+    ["4", "5,", "6"]
+  ])
+  file1_headers.registerQuery('1 1', [['1', '2', '3']]);
+  file1_headers.registerQuery('2 6', [['4', '5', '6']]);
 
-  // //not sure if this should be part of our test cases considering that the error should be found in our
-  // //backend with the CSV parser
-  // mockedData.set("file_inconsistent_columns", [
-  //   ["header1", "header2", "header3"],
-  //   ["1", "2", "3"],
-  //   ["4", "5"],
-  // ]);
+  //inconsistent column (not sure if this should be a case to have for this assignment)
+  const file_inconsistent_columns = new MockedData([
+    ['header1', 'header2', 'header3'],
+    ['1', '2', '3'],
+    ['4', '5']
+  ])
+
+  //set the map for all available datasets
+  mockedData.set('file1_headers', file1_headers);
+  mockedData.set('file1_noheaders', file1_noheaders);
+  mockedData.set('file_inconsistent_columns', file_inconsistent_columns);
 
   //initialize state hooks
   const [commandHistory, setCommandHistory] = useState<
     { command: string; result: string | string[][] }[]
   >([]);
-  const [loadedFile, setLoadedFile] = useState<string[][]>();
+  const [loadedFile, setLoadedFile] = useState<MockedData>();
   const [useBrief, setUseBrief] = useState<boolean>(true);
   const commandProcessor = new CommandProcessor();
 
@@ -58,8 +67,23 @@ export default function REPL() {
   });
 
   commandProcessor.registerCommand("load_file", (args: string[]) => {
-    if (mockedData.get(args[0])) {
-      setLoadedFile(mockedData.get(args[0]));
+    //i changed this
+    if (args.length < 2) {
+      return "!Error! load_file command must be in format: load_file <file_name> <if_file_contains_headers>";
+    }
+
+    if (!(args[1] === "true") && !(args[1] === "false")) {
+      return "!Error! <if_file_contains_headers> parameter must be of value 'true' or 'false'";
+    }
+
+    const data = mockedData.get(args[0]);
+    if (data) {
+      if (args[1] === "true") {
+        data.setHeaders(true);
+      } else {
+        data.setHeaders(false);
+      }
+      setLoadedFile(data);
       return "file loaded successfully";
     } else {
       return "file could not be found";
@@ -68,11 +92,20 @@ export default function REPL() {
 
   commandProcessor.registerCommand("view_file", () => {
     if (loadedFile) {
-      return loadedFile;
+      return loadedFile.view();
     } else {
       return "No file has been loaded!";
     }
   });
+
+  //implement our search
+  commandProcessor.registerCommand("search_file", (args: string[]) => {
+    if (!loadedFile) {
+      return "No file has been loaded!";
+    }
+    
+    
+  })
 
   return (
     <div className="repl">

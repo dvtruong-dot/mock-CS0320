@@ -92,7 +92,7 @@ test('load legitimate file and view -> load another legitimate file and view', a
 
     //load the first file
     await page.getByPlaceholder('Enter command here!').click();
-    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers');
+    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers true');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     //success message should appear
@@ -108,7 +108,7 @@ test('load legitimate file and view -> load another legitimate file and view', a
 
     //loading another file
     await page.getByPlaceholder('Enter command here!').click();
-    await page.getByPlaceholder('Enter command here!').fill('load_file file1_noheaders');
+    await page.getByPlaceholder('Enter command here!').fill('load_file file1_noheaders false');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     //success message should also display
@@ -124,7 +124,7 @@ test('load legitimate file and view -> load another legitimate file and view', a
 
     //load in the old file
     await page.getByPlaceholder('Enter command here!').click();
-    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers');
+    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers true');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     //a success message should display again
@@ -145,7 +145,7 @@ test('load file not found', async ( { page } ) => {
 
     //try to load a file that doesn't exist within our mock
     await page.getByPlaceholder('Enter command here!').click();
-    await page.getByPlaceholder('Enter command here!').fill('load_file file');
+    await page.getByPlaceholder('Enter command here!').fill('load_file file false');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     //it should be unsuccessful and the following message should display
@@ -165,7 +165,7 @@ test("load file that doesn't exist after loading a legitimate file", async ( { p
 
     //loading a legitimate file and viewing to ensure that it displays correctly
     await page.getByPlaceholder('Enter command here!').click();
-    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers');
+    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers true');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     await expect(page.getByText('file loaded successfully')).toBeVisible();
@@ -178,7 +178,7 @@ test("load file that doesn't exist after loading a legitimate file", async ( { p
 
     //loading a nonexistent file
     await page.getByPlaceholder('Enter command here!').click();
-    await page.getByPlaceholder('Enter command here!').fill('load_file nonexistent');
+    await page.getByPlaceholder('Enter command here!').fill('load_file nonexistent true');
     await page.getByRole('button', { name: 'Submit' }).click();
 
     //should be unsuccessful
