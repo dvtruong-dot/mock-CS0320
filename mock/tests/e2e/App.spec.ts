@@ -32,7 +32,7 @@ test('on page load, i dont see the input box until login', async ({ page }) => {
   await page.goto('http://localhost:8000/');
   await expect(page.getByLabel('Sign Out')).not.toBeVisible()
   await expect(page.getByLabel('Command input')).not.toBeVisible()
-  
+
   // click the login button
   await page.getByLabel('Login').click();
   await expect(page.getByLabel('Sign Out')).toBeVisible()
@@ -55,14 +55,39 @@ test('after I type into the input box, its text changes', async ({ page }) => {
   await expect(page.getByLabel('Command input')).toHaveValue(mock_input)
 });
 
-test('on page load, i see a button', async ({ page }) => {
-  // TODO WITH TA: Fill this in!
-});
+test('history updates correctly', async ( { page } ) => {
+  await page.goto('http://localhost:8000/');
+  await page.getByLabel('Login').click();
 
-test('after I click the button, its label increments', async ({ page }) => {
-  // TODO WITH TA: Fill this in to test your button counter functionality!
-});
+  //enter a few commands that don't exist
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('t');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('s');
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await page.getByPlaceholder('Enter command here!').click();
+  await page.getByPlaceholder('Enter command here!').fill('x');
+  await page.getByRole('button', { name: 'Submit' }).click();
 
-test('after I click the button, my command gets pushed', async ({ page }) => {
-  // TODO: Fill this in to test your button push functionality!
-});
+  //expect that they are in the correct order
+  await page.getByText('Command t not found. Command').click();
+  const firstHistory = await page.evaluate(() => {
+    const currHistory = document.querySelector('.repl-history');
+    return currHistory?.children[0].textContent;
+  })
+
+  const secondHistory = await page.evaluate(() => {
+    const currHistory = document.querySelector('.repl-history');
+    return currHistory?.children[1].textContent;
+  })
+
+  const thirdHistory = await page.evaluate(() => {
+    const currHistory = document.querySelector('.repl-history');
+    return currHistory?.children[2].textContent;
+  })
+
+  expect(firstHistory).toEqual(' Command t not found.');
+  expect(secondHistory).toEqual(' Command s not found.');
+  expect(thirdHistory).toEqual(' Command x not found.');
+})

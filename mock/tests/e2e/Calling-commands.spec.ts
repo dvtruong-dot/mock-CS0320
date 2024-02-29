@@ -137,9 +137,6 @@ test('load legitimate file and view -> load another legitimate file and view', a
 
     //the table should display in the history again
     await expect(page.getByText('header1header2header3123456').nth(1)).toBeVisible();
-
-
-    //TODO: for later, add when you load a file that doesn't exist, it doesn't change the file in the REPL currently
 })
 
 test('load file not found', async ( { page } ) => {
@@ -154,5 +151,44 @@ test('load file not found', async ( { page } ) => {
     //it should be unsuccessful and the following message should display
     await expect(page.getByText('file could not be found')).toBeVisible();
 
-    //TODO: check that there is no file loaded into the REPL somehow
+    //therefore viewing a file should be unsuccessful
+    await page.getByPlaceholder('Enter command here!').click();
+    await page.getByPlaceholder('Enter command here!').fill('view_file');
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('No file has been loaded!')).toBeVisible();
+})
+
+test("load file that doesn't exist after loading a legitimate file", async ( { page } ) => {
+    await page.goto(url);
+    await page.getByLabel('Login').click();
+
+    //loading a legitimate file and viewing to ensure that it displays correctly
+    await page.getByPlaceholder('Enter command here!').click();
+    await page.getByPlaceholder('Enter command here!').fill('load_file file1_headers');
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('file loaded successfully')).toBeVisible();
+
+    await page.getByPlaceholder('Enter command here!').click();
+    await page.getByPlaceholder('Enter command here!').fill('view_file');
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('header1header2header3123456')).toBeVisible();
+
+    //loading a nonexistent file
+    await page.getByPlaceholder('Enter command here!').click();
+    await page.getByPlaceholder('Enter command here!').fill('load_file nonexistent');
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    //should be unsuccessful
+    await expect(page.getByText('file could not be found')).toBeVisible();
+
+    //trying to view should return the file that was most recently loaded, which, in this case, is 
+    //file1_headers
+    await page.getByPlaceholder('Enter command here!').click();
+    await page.getByPlaceholder('Enter command here!').fill('view_file');
+    await page.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('header1header2header3123456').nth(1)).toBeVisible();
 })
