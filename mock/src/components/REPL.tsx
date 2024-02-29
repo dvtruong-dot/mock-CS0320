@@ -3,6 +3,7 @@ import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
 import { CommandProcessor } from "../command";
+import { MockedData } from "../mocked_data";
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -14,34 +15,33 @@ import { CommandProcessor } from "../command";
 */
 
 export default function REPL() {
-  const mockedData = new Map<string, string[][]>();
-  mockedData.set("file1_headers", [
+  const mockedData = new Map<string, MockedData>();
+
+  //Create instances of MockedData
+  const file1_headers = new MockedData([
     ["header1", "header2", "header3"],
     ["1", "2", "3"],
     ["4", "5", "6"],
   ]);
+  file1_headers.registerQuery("header1 4", [["4", "5", "6"]]);
+  file1_headers.registerQuery("1 2", [["1", "2", "3"]]);
 
-  mockedData.set("file1_noheaders", [
-    ["1", "2", "3"], 
-    ["4", "5,", "6"]
-  ])
+  // mockedData.set("file1_noheaders", [
+  //   ["1", "2", "3"],
+  //   ["4", "5,", "6"],
+  // ]);
 
-  //not sure if this should be part of our test cases considering that the error should be found in our
-  //backend with the CSV parser
-  mockedData.set("file_inconsistent_columns", [
-    ["header1", "header2", "header3"],
-    ["1", "2", "3"],
-    ["4", "5"]
-  ]
-  )
+  // //not sure if this should be part of our test cases considering that the error should be found in our
+  // //backend with the CSV parser
+  // mockedData.set("file_inconsistent_columns", [
+  //   ["header1", "header2", "header3"],
+  //   ["1", "2", "3"],
+  //   ["4", "5"],
+  // ]);
 
-  
-  // TODO: Add some kind of shared state that holds all the commands submitted.
-  //const [history, setHistory] = useState<string[]>([]);
-
-  //new schtuff
+  //initialize state hooks
   const [commandHistory, setCommandHistory] = useState<
-    { command: string; result: string | string[][]}[]
+    { command: string; result: string | string[][] }[]
   >([]);
   const [loadedFile, setLoadedFile] = useState<string[][]>();
   const [useBrief, setUseBrief] = useState<boolean>(true);
