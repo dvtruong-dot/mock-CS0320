@@ -15,7 +15,7 @@ export class CommandProcessor {
     if (commandFunc) {
       return commandFunc(args);
     } else {
-      return "Command " + commandName + " not found.";
+      return "Command '" + commandName + "' not found.";
     }
   }
 }

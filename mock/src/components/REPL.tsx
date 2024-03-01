@@ -3,7 +3,8 @@ import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
 import { CommandProcessor } from "../command";
-import { MockedData } from "../mocked_data";
+import { MockedData } from "../mockedData";
+import { dataMap } from "../../data/mockedJson";
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -15,39 +16,6 @@ import { MockedData } from "../mocked_data";
 */
 
 export default function REPL() {
-  const mockedData = new Map<string, MockedData>();
-
-  //Create instances of MockedData
-  //
-  const file1_headers = new MockedData([
-    ["header1", "header2", "header3"],
-    ["1", "2", "3"],
-    ["4", "5", "6"],
-  ]);
-  file1_headers.registerQuery("header1 4", [["4", "5", "6"]]);
-  file1_headers.registerQuery("1 2", [["1", "2", "3"]]);
-  file1_headers.registerQuery("header3 3", [["1", "2", "3"]]);
-
-  //
-  const file1_noheaders = new MockedData([
-    ["1", "2", "3"],
-    ["4", "5,", "6"]
-  ])
-  file1_headers.registerQuery('1 1', [['1', '2', '3']]);
-  file1_headers.registerQuery('2 6', [['4', '5', '6']]);
-
-  //inconsistent column (not sure if this should be a case to have for this assignment)
-  const file_inconsistent_columns = new MockedData([
-    ['header1', 'header2', 'header3'],
-    ['1', '2', '3'],
-    ['4', '5']
-  ])
-
-  //set the map for all available datasets
-  mockedData.set('file1_headers', file1_headers);
-  mockedData.set('file1_noheaders', file1_noheaders);
-  mockedData.set('file_inconsistent_columns', file_inconsistent_columns);
-
   //initialize state hooks
   const [commandHistory, setCommandHistory] = useState<
     { command: string; result: string | string[][] }[]
@@ -67,7 +35,6 @@ export default function REPL() {
   });
 
   commandProcessor.registerCommand("load_file", (args: string[]) => {
-    //i changed this
     if (args.length < 2) {
       return "!Error! load_file command must be in format: load_file <file_name> <if_file_contains_headers>";
     }
@@ -76,7 +43,8 @@ export default function REPL() {
       return "!Error! <if_file_contains_headers> parameter must be of value 'true' or 'false'";
     }
 
-    const data = mockedData.get(args[0]);
+    //get mocked data object from map using file
+    const data = dataMap.get(args[0]);
     if (data) {
       if (args[1] === "true") {
         data.setHeaders(true);
@@ -86,7 +54,7 @@ export default function REPL() {
       setLoadedFile(data);
       return "file loaded successfully";
     } else {
-      return "file could not be found";
+      return "file '" + args[0] + "' could not be found";
     }
   });
 
@@ -102,10 +70,15 @@ export default function REPL() {
   commandProcessor.registerCommand("search_file", (args: string[]) => {
     if (!loadedFile) {
       return "No file has been loaded!";
+    } else {
+      const response = loadedFile.search(args[0] + " " + args[1]);
+      if (response.length == 0) {
+        return "Could not find '" + args[1] + "' in column '" + args[0] + "'";
+      } else {
+        return response;
+      }
     }
-    
-    
-  })
+  });
 
   return (
     <div className="repl">
