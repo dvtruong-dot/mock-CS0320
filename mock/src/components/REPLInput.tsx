@@ -9,7 +9,7 @@ interface REPLInputProps {
   //setHistory: Dispatch<SetStateAction<string[]>>
 
   //new shit
-  commandHistory: { command: string; result: string | string[][]}[];
+  commandHistory: { command: string; result: string | string[][] }[];
   setCommandHistory: Dispatch<
     SetStateAction<{ command: string; result: string | string[][] }[]>
   >;

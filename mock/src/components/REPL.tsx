@@ -3,7 +3,7 @@ import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
 import { CommandProcessor } from "../command";
-import { MockedData } from "../mockedData";
+import { MockedData } from "../mockedCSV";
 import { dataMap } from "../../data/mockedJson";
 
 /* 
@@ -41,6 +41,11 @@ export default function REPL() {
 
     if (!(args[1] === "true") && !(args[1] === "false")) {
       return "!Error! <if_file_contains_headers> parameter must be of value 'true' or 'false'";
+    }
+
+    //SIMULATED MALFORMED CSV
+    if (args[0] == "file_malformed") {
+      return "!Error! CSV is malformed!";
     }
 
     //get mocked data object from map using file
@@ -82,9 +87,6 @@ export default function REPL() {
 
   return (
     <div className="repl">
-      {/*This is where your REPLHistory might go... You also may choose to add it within your REPLInput 
-      component or somewhere else depending on your component organization. What are the pros and cons of each? */}
-      {/* TODO: Update your REPLHistory and REPLInput to take in new shared state as props */}
       <REPLHistory commandHistory={commandHistory} useBrief={useBrief} />
       <hr></hr>
       <REPLInput
