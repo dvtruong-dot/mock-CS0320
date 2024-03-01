@@ -4,11 +4,10 @@ import { ControlledInput } from "./ControlledInput";
 import { REPLFunction } from "./REPLFunction";
 import { CommandProcessor } from "../command";
 
+/**
+ * The props for the REPLInput component of aite
+ */
 interface REPLInputProps {
-  //history : string[];
-  //setHistory: Dispatch<SetStateAction<string[]>>
-
-  //new shit
   commandHistory: { command: string; result: string | string[][] }[];
   setCommandHistory: Dispatch<
     SetStateAction<{ command: string; result: string | string[][] }[]>
@@ -17,19 +16,20 @@ interface REPLInputProps {
   useBrief: boolean;
   setUseBrief: Dispatch<SetStateAction<boolean>>;
   commandProcessor: CommandProcessor;
-  // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
 }
-// You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
-// REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
+
+/**
+ * Function that controls the input and submitt boxes in the site
+ * @param props the props that are in the REPL input class: commandHistory, useBrief, 
+ * and command processor as well as setCommandHistory and setUseBrief
+ * @returns a Javascript componnent that is the input and submit boxes in the site
+ */
 export function REPLInput(props: REPLInputProps) {
-  // Remember: let React manage state in your webapp.
-  // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-  //const [brief, setBrief] = useState<boolean>(true);
 
   /**
-   * We suggest breaking down this component into smaller components, think about the individual pieces
-   * of the REPL and how they connect to each other...
+   * A handler for the submit function. It basically saves what is written in the input box 
+   * as well as its output in the 'history' of the site, which is also displayed on the site
    */
   function handleSubmit(commandString: string) {
     const toAddCommand = {
@@ -42,11 +42,12 @@ export function REPLInput(props: REPLInputProps) {
     setCommandString("");
   }
 
+  /**
+   * gets the output of an inputted command string
+   * @param command the command string of the desired function
+   * @returns 
+   */
   function getOutput(command: string): string | string[][] {
-    //maybe a placeholder until user story 6 where we'll have a dictionary that takes a command and maps
-    //it to a function (or class ???, idk im confused) that has the function it corresponds to. This
-    //function should also return a string
-
     return props.commandProcessor.processCommand(command);
   }
 

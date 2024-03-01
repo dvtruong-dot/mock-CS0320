@@ -14,7 +14,7 @@ test("empty command", async ({ page }) => {
 
   //the command should not be found and the portionn where the command inputted
   //goes should be empty
-  await expect(page.getByText("Command not found.")).toBeVisible();
+  await expect(page.getByText("Command \'\' not found.")).toBeVisible();
 
   //click submit when we replace with spaces
   await page.getByPlaceholder("Enter command here!").click();
@@ -22,7 +22,7 @@ test("empty command", async ({ page }) => {
   await page.getByRole("button", { name: "Submit" }).click();
 
   //same thing should happen as above
-  await expect(page.getByText("Command not found.").nth(1)).toBeVisible();
+  await expect(page.getByText("Command \'\' not found.").nth(1)).toBeVisible();
 
   //it should show empty commands in verbose mode
   await page.getByPlaceholder("Enter command here!").click();
@@ -30,12 +30,12 @@ test("empty command", async ({ page }) => {
   await page.getByRole("button", { name: "Submit" }).click();
 
   await expect(
-    page.getByText("command: result: Command not").first()
+    page.getByText("command: result: Command \'\' not found.").first()
   ).toBeVisible();
   await expect(
-    page.getByText("command: result: Command not").nth(1)
+    page.getByText("command: result: Command \'\' not found.").nth(1)
   ).toBeVisible();
-  await expect(page.getByText("command: mode result: mode")).toBeVisible();
+  await expect(page.getByText("command: mode result: mode set to verbose")).toBeVisible();
 });
 
 /**
@@ -51,7 +51,7 @@ test("command doesn't exist", async ({ page }) => {
   await page.getByRole("button", { name: "Submit" }).click();
 
   //it should display "Command t not found" in the history
-  await expect(page.getByText("Command t not found.")).toBeVisible();
+  await expect(page.getByText("Command \'t\' not found.")).toBeVisible();
 
   //enter second command that doesn't exist
   await page.getByPlaceholder("Enter command here!").click();
@@ -59,7 +59,7 @@ test("command doesn't exist", async ({ page }) => {
   await page.getByRole("button", { name: "Submit" }).click();
 
   //it should display that the command doesn't exist in the history
-  await expect(page.getByText("Command s not found.")).toBeVisible();
+  await expect(page.getByText("Command \'s\' not found.")).toBeVisible();
 });
 
 /**
@@ -74,7 +74,7 @@ test("mode command", async ({ page }) => {
   await page.getByPlaceholder("Enter command here!").fill("yoo");
   await page.getByRole("button", { name: "Submit" }).click();
 
-  await expect(page.getByText("Command yoo not found.")).toBeVisible();
+  await expect(page.getByText("Command \'yoo\' not found.")).toBeVisible();
 
   //enter mode to change to verbose
   await page.getByPlaceholder("Enter command here!").click();
@@ -82,9 +82,8 @@ test("mode command", async ({ page }) => {
   await page.getByRole("button", { name: "Submit" }).click();
 
   //check that all entries in the history are in verbose
-  await expect(page.getByText("Command yoo nnot found.")).not.toBeVisible();
-  await expect(page.getByText("command: yoo result: Command")).toBeVisible();
-  await expect(page.getByText("command: mode result: mode")).toBeVisible();
+  await expect(page.getByText("command: yoo result: Command \'yoo\' not found.")).toBeVisible();
+  await expect(page.getByText("command: mode result: mode set to verbose")).toBeVisible();
 
   //enter mode again to change to brief
   await page.getByPlaceholder("Enter command here!").click();
@@ -93,12 +92,12 @@ test("mode command", async ({ page }) => {
 
   //check that all entires in the history are now brief
   await expect(
-    page.getByText("command: yoo result: Command")
+    page.getByText("command: yoo result: Command \'yoo\' not found.")
   ).not.toBeVisible();
-  await expect(page.getByText("command: mode result: mode")).not.toBeVisible();
-  await expect(page.getByText("Command yoo not found.")).toBeVisible();
-  await expect(page.getByText("mode set to verbose")).toBeVisible();
+  await expect(page.getByText("command: mode result: mode set to verbose")).not.toBeVisible();
+  await expect(page.getByText("Command \'yoo\' not found.")).toBeVisible();
   await expect(page.getByText("mode set to brief")).toBeVisible();
+  await expect(page.getByText("mode set to verbose")).toBeVisible();
 });
 
 /**
@@ -182,7 +181,7 @@ test("load file not found", async ({ page }) => {
   await page.getByRole("button", { name: "Submit" }).click();
 
   //it should be unsuccessful and the following message should display
-  await expect(page.getByText("file could not be found")).toBeVisible();
+  await expect(page.getByText("file \'file\' could not be found")).toBeVisible();
 
   //therefore viewing a file should be unsuccessful
   await page.getByPlaceholder("Enter command here!").click();
@@ -224,7 +223,7 @@ test("load file that doesn't exist after loading a legitimate file", async ({
   await page.getByRole("button", { name: "Submit" }).click();
 
   //should be unsuccessful
-  await expect(page.getByText("file could not be found")).toBeVisible();
+  await expect(page.getByText("file \'nonexistent\' could not be found")).toBeVisible();
 
   //trying to view should return the file that was most recently loaded, which, in this case, is
   //file1_headers
@@ -275,14 +274,14 @@ test("test search", async ({ page }) => {
     .getByPlaceholder("Enter command here!")
     .fill("search_file bippity boppity");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Could not find 'boppity' in")).toBeVisible();
+  await expect(page.getByText("Could not find 'boppity' in column 'bippity'")).toBeVisible();
 
   await page.getByPlaceholder("Enter command here!").click();
   await page.getByPlaceholder("Enter command here!").fill("mode");
   await page.getByRole("button", { name: "Submit" }).click();
 
   await expect(page.getByText("command: search_file 1 2")).toBeVisible();
-  await expect(page.getByText("command: search_file bippity")).toBeVisible();
+  await expect(page.getByText("command: search_file bippity boppity result: Could not find 'boppity' in column 'bippity'")).toBeVisible();
 });
 
 /**
