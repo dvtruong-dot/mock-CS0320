@@ -3,28 +3,25 @@ import "../styles/main.css";
 import { REPLHistory } from "./REPLHistory";
 import { REPLInput } from "./REPLInput";
 import { CommandProcessor } from "../command";
-import { MockedData } from "../mockedCSV";
-import { dataMap } from "../../data/mockedJson";
+import { mockedCSV } from "../mockedCSV";
+import { dataMap } from "../../data/mockedData";
 
-/* 
-  You'll want to expand this component (and others) for the sprints! Remember 
-  that you can pass "props" as function arguments. If you need to handle state 
-  at a higher level, just move up the hooks and pass the state/setter as a prop.
-  
-  This is a great top level component for the REPL. It's a good idea to have organize all components in a component folder.
-  You don't need to do that for this gearup.
-*/
-
+/**
+ * Top level component for the REPL. Registers all possible commands.
+ * @returns A component displaying the REPL history and input bar.
+ */
 export default function REPL() {
   //initialize state hooks
   const [commandHistory, setCommandHistory] = useState<
     { command: string; result: string | string[][] }[]
   >([]);
-  const [loadedFile, setLoadedFile] = useState<MockedData>();
+  const [loadedFile, setLoadedFile] = useState<mockedCSV>();
   const [useBrief, setUseBrief] = useState<boolean>(true);
   const commandProcessor = new CommandProcessor();
 
   //Command Registration
+
+  //register mode
   commandProcessor.registerCommand("mode", () => {
     setUseBrief(!useBrief);
     if (useBrief) {
@@ -34,6 +31,7 @@ export default function REPL() {
     }
   });
 
+  //register load
   commandProcessor.registerCommand("load_file", (args: string[]) => {
     if (args.length < 2) {
       return "!Error! load_file command must be in format: load_file <file_name> <if_file_contains_headers>";
@@ -63,6 +61,7 @@ export default function REPL() {
     }
   });
 
+  //register view
   commandProcessor.registerCommand("view_file", () => {
     if (loadedFile) {
       return loadedFile.view();
@@ -71,7 +70,7 @@ export default function REPL() {
     }
   });
 
-  //implement our search
+  //register search
   commandProcessor.registerCommand("search_file", (args: string[]) => {
     if (!loadedFile) {
       return "No file has been loaded!";

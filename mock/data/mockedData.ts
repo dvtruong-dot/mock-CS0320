@@ -1,9 +1,13 @@
-import { MockedData } from "../src/mockedCSV";
+import { mockedCSV } from "../src/mockedCSV";
 
-export const dataMap = new Map<string, MockedData>();
+/**
+ * This class holds all of the mocked data for front-end testing purposes.
+ * It exports a map containing the data, which is stored in mockedCSV objects.
+ */
+export const dataMap = new Map<string, mockedCSV>();
 
 //Normal file with headers
-const file1_headers = new MockedData([
+const file1_headers = new mockedCSV([
   ["header1", "header2", "header3"],
   ["1", "2", "3"],
   ["4", "5", "6"],
@@ -13,7 +17,7 @@ file1_headers.registerQuery("1 2", [["1", "2", "3"]]);
 file1_headers.registerQuery("header3 3", [["1", "2", "3"]]);
 
 //Normal file with no headers
-const file1_noheaders = new MockedData([
+const file1_noheaders = new mockedCSV([
   ["1", "2", "3"],
   ["4", "5,", "6"],
 ]);
@@ -21,18 +25,18 @@ file1_headers.registerQuery("1 1", [["1", "2", "3"]]);
 file1_headers.registerQuery("2 6", [["4", "5", "6"]]);
 
 //inconsistent column
-const file_malformed = new MockedData([
+const file_malformed = new mockedCSV([
   ["header1", "header2", "header3"],
   ["1", "2", "3"],
   ["4", "5"],
 ]);
 
 //one column
-const one_column = new MockedData([["1"], ["2"], ["3"]]);
+const one_column = new mockedCSV([["1"], ["2"], ["3"]]);
 one_column.registerQuery("0 3", [["3"]]);
 
 //one row
-const one_row = new MockedData([["1, 2, 3, 4, 5"]]);
+const one_row = new mockedCSV([["1, 2, 3, 4, 5"]]);
 one_row.registerQuery("3 4", [["1, 2, 3, 4, 5"]]);
 
 //set the map for all available datasets

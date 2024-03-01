@@ -1,9 +1,9 @@
 /**
  * Class that holds how a CSV may be formatted when parsed through a CSV parser
- * 
+ *
  * It also holds the functionality to access mock search queries and to view the CSV data
  */
-export class MockedData {
+export class mockedCSV {
   private data: string[][];
   private queries: Map<string, string[][]> = new Map();
   private headers: boolean = false;
@@ -51,7 +51,7 @@ export class MockedData {
    * A setter method for the headers field
    * @param headers the boolean to set the headers field in this class to
    */
-  setHeaders(headers : boolean) {
+  setHeaders(headers: boolean) {
     this.headers = headers;
   }
 }
